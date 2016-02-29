@@ -10,11 +10,10 @@ General
 
 This app will first try to communicate with Snowboard on COM port indicated by `snowboard_1610.ini`. If COM port is not available or Snowboard does not respond, it will show a 3D image with arbitrary signal strength.
 
-### Quick Start (for Windows users)
-Download the latest [release](https://github.com/kitronyx/snowboard/releases) file for Snowboard and run `snowforce.exe`.
-
-### Run from Source Code
-See http://sites.kitronyx.com/wiki/snowboard/examples/snowforce-code-to-read-force-matrix-sensor
+### Quick Start
+See
+* http://sites.kitronyx.com/wiki/applications/snowforce
+* http://sites.kitronyx.com/wiki/snowboard/examples/snowforce-code-to-read-force-matrix-sensor
 
 DEVELOPMENT ENVIRONMENT
 -----------------------
