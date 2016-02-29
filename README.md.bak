@@ -37,10 +37,6 @@ INI files
 INI configuration
 -----------------
 
-### `device`
-
-`device` refers to "snowboard" or "mc1509".
-
 ### `ndrive`
 
 `ndrive` is the number of lines of a matrix sensor connected to drive channels of Snowboard.

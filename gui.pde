@@ -215,7 +215,7 @@ void drawCopyright()
     fill(255);
     textAlign(CENTER, BOTTOM);
     textSize(12);
-    text("Copyright(c) 2014-2015 Kitronyx Inc. All rights reserved", width/2, height-10);
+    text("Copyright(c) 2014-2016 Kitronyx Inc. All rights reserved", width/2, height-10);
 }
 
 void drawGraph()

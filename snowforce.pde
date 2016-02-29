@@ -20,10 +20,11 @@ final static String TITLE = "snowforce";
 
 // max ad value to adopt
 final int MAXVAL = 255;
-final int MAXDRIVE = 16;
-final int MAXSENSE = 10;
+int MAXDRIVE = 16;
+int MAXSENSE = 10;
 
 // configuration parameters read from surf.ini
+String DEVICE = "snowboard";
 int NDRIVE;
 int NSENSE;
 int INTERPSCALE;
@@ -39,6 +40,7 @@ Serial a_port;
 String comPort;
 int baudRate=115200;
 boolean is_serial_read = false;
+String packetType="string";
 
 // data and statistics
 int[][] data;
@@ -79,10 +81,8 @@ boolean xDir = true;
 boolean yDir = true;
 boolean zDir = true;
 boolean drawHeatmap = false;
-//boolean doFullScreen = true;
 boolean drawMessages = true;
-// int prevWidth = 800;
-// int prevHeight = 600;
+boolean showMeasurement = true;
 
 void setup()
 {
@@ -121,43 +121,55 @@ void readINI(File selection)
     if (selection == null) config = loadStrings("snowboard_1610.ini");
     else config= loadStrings(selection.getAbsolutePath());
         
-
     tokens = config[0].split(delims);
-    NDRIVE = int(tokens[1]);
+    DEVICE = tokens[1];
+    if (DEVICE.equals("snowboard"))
+    {
+        MAXDRIVE = 16;
+        MAXSENSE = 10;
+    }
+    else if (DEVICE.equals("mc1509"))
+    {
+        MAXDRIVE = 48;
+        MAXSENSE = 48;
+    }   
 
     tokens = config[1].split(delims);
-    NSENSE = int(tokens[1]);
+    NDRIVE = int(tokens[1]);
 
     tokens = config[2].split(delims);
-    ACTIVERANGE = int(split(tokens[1], ','));
+    NSENSE = int(tokens[1]);
 
     tokens = config[3].split(delims);
-    INTERPSCALE = int(tokens[1]);
+    ACTIVERANGE = int(split(tokens[1], ','));
 
     tokens = config[4].split(delims);
-    PORT = tokens[1];
+    INTERPSCALE = int(tokens[1]);
 
     tokens = config[5].split(delims);
-    xDir = boolean(tokens[1]);
-
+    PORT = tokens[1];
+    
     tokens = config[6].split(delims);
-    yDir = boolean(tokens[1]);
+    baudRate = int(tokens[1]);
 
     tokens = config[7].split(delims);
-    zDir = boolean(tokens[1]);
+    xDir = boolean(tokens[1]);
 
     tokens = config[8].split(delims);
-    driveindex = int(split(tokens[1], ','));
+    yDir = boolean(tokens[1]);
 
     tokens = config[9].split(delims);
-    senseindex = int(split(tokens[1], ','));
+    zDir = boolean(tokens[1]);
 
-    // obsolete
     tokens = config[10].split(delims);
-    String strCameraEye = tokens[1];
+    driveindex = int(split(tokens[1], ','));
 
     tokens = config[11].split(delims);
-    String strCameraTranslate = tokens[1];
+    senseindex = int(split(tokens[1], ','));
+    
+    tokens = config[12].split(delims);
+    packetType = tokens[1];
+    
 }
 
 void applyINI()
@@ -223,6 +235,7 @@ void startSerial()
         println("Initializing communication");
         int comm_init_start = millis();
         int comm_init_wait_time = 5000; // ms; 5s
+        /*
         while (true)
         {
             a_port.write("A");
@@ -238,6 +251,7 @@ void startSerial()
                 break;
             }
         }
+        */
     }
 }
 
@@ -260,7 +274,7 @@ void draw()
         drawHelp();
         drawInfo();
         drawCopyright();
-        drawMeasurement(); // sensor 2D measurement
+        if (showMeasurement == true) drawMeasurement(); // sensor 2D measurement
         drawCopyright();
 
         cam.endHUD();
@@ -434,17 +448,45 @@ boolean getData()
     // lock buffer.
     is_serial_read = true;
 
+    // request data
+    a_port.write("A");
+    
     // read the serial buffer:
-    a_port.write("A");    
-    String myString = a_port.readStringUntil('\n');
-    if (myString == null) return false;
-
-    // if you got any bytes other than the linefeed:
-    myString = trim(myString);
-
-    // split the string at the commas
-    // and convert the sections into integers:
-    int sensors[] = int(split(myString, ','));
+    int [] sensors = new int[NDRIVE*NSENSE];
+    if (packetType.equals("string"))
+    {
+        String myString = a_port.readStringUntil('\n');
+        if (myString == null) return false;
+    
+        // if you got any bytes other than the linefeed:
+        myString = trim(myString);
+    
+        // split the string at the commas
+        // and convert the sections into integers:
+        sensors = int(split(myString, ','));
+    }
+    else if (packetType.equals("binary"))
+    {
+        int[] resp = new int[NDRIVE*NSENSE];
+        byte[] buffer = new byte[NDRIVE*NSENSE];
+        int nread = 0;
+        int offset = 0;
+        while (true)
+        {
+            if (a_port.available() > 0)
+            {
+                nread = a_port.readBytes(buffer);
+                for (int i = 0; i < nread; i++) resp[offset + i] = (int)(buffer[i]) & 0xFF;
+                offset += nread;
+            }
+            if (offset == NDRIVE*NSENSE) break;
+        }
+        
+        if (offset != NDRIVE*NSENSE) return false;
+        
+        for (int i = 0; i < sensors.length; i++) sensors[i] = resp[i];
+    }
+    
 
     // statistics of sensor data.
     // get min and max value of current frame.
@@ -730,6 +772,8 @@ void keyPressed()
     if (key == 'h') drawHeatmap = !drawHeatmap;
 
     if (key == ' ') drawMessages = !drawMessages;
+    
+    if (key == 'm') showMeasurement = !showMeasurement;
 }
 
 
