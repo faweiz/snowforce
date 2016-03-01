@@ -4,6 +4,7 @@ Processing visualization app for Kitronyx Snwoboard
 This app will visualize 3D force mapping from your Snowboard.
 
 ![Original](res/screenshot_mc1509_ms9712.png)
+![Original](res/screenshot_mc1509_ms9705.png)
 
 General
 -------
