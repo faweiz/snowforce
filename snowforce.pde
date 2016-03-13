@@ -348,9 +348,13 @@ void visualization2D()
     {
         w = 480;
         h = 360;
-    } else
+    } else if (nrow < ncol)
     {
         w = 360;
+        h = 480;
+    } else
+    {
+        w = 480;
         h = 480;
     }
 
