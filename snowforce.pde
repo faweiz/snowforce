@@ -49,6 +49,7 @@ int[][] backgroundNoise;
 int[][] out_interp2d;
 int minFrame = 0;
 int maxFrame = 0;
+int sumFrame = 0;
 int current_time = millis();
 float sensorFrameRate;
 String strSensorData;
@@ -496,8 +497,10 @@ boolean getData()
     // get min and max value of current frame.
     minFrame = 100000;
     maxFrame = 0;
+    sumFrame = 0;
     for (int i = 0; i < sensors.length; i++)
     {
+        sumFrame += sensors[i];
         if (sensors[i] < minFrame) minFrame = sensors[i];
         if (sensors[i] > maxFrame) maxFrame = sensors[i];
     }

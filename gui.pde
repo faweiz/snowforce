@@ -190,6 +190,7 @@ void drawInfo()
         "Z Axis Scale: " + zscale + "\n" +
         "Minimum Value (Current Frame): " + minFrame + "\n" +
         "Maximum Value (Current Frame): " + maxFrame + "\n" +
+        "Sum Value (Current Frame): " + sumFrame + "\n" +
         "Background Noise Filtering: " + doBackgroundNoiseFiltering + "\n" +
         "Threshold Value: " + thresholdValue[thresholdValueIndex] + "\n" +
         "Camera Eye: (" + eyeX + ", " + eyeY + ", " + eyeZ + ")\n" + 
