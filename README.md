@@ -19,7 +19,7 @@ See
 DEVELOPMENT ENVIRONMENT
 -----------------------
 * Processing 3.0a5 (http://www.processing.org)
-* ControlP5 Library 2.0.4 (www.sojamo.de/libraries/controlP5/
+* ControlP5 Library 2.0.4 (www.sojamo.de/libraries/controlP5/)
 * PeasyCam Library (http://mrfeinberg.com/peasycam/)
 
 HELP
